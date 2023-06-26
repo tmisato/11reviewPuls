@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>評価入力</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #dce7dc;
+            border-radius: 3px;
+        }
+        
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+        
+        button[type="submit"] {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #92b192;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button[type="submit"]:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>入力フォーム</h1>
+    <form action="/update/<%= users[0].id %>" method="POST" onsubmit="return validateForm(event)">
+        <label for="nameInput">名前</label>
+        <input type="text" name="username" id="nameInput" value="<%= users[0].username %>">
+        <div id="nameErrorMessage" class="error-message"></div><br>
+
+        <label for="ageInput">年齢</label>
+        <input type="text" name="age" id="ageInput" value="<%= users[0].age %>"><br>
+        <div id="ageErrorMessage" class="error-message"></div><br>
+
+        <label for="ratingInput">評価</label>
+        <input type="text" name="rating" id="ratingInput" value="<%= users[0].rating %>"><br>
+        <div id="ratingErrorMessage" class="error-message"></div><br>
+
+        <label for="reasonInput">評価内容</label>
+        <input type="text" name="reason" id="reasonInput" value="<%= users[0].reason %>"><br>
+        <div id="reasonErrorMessage" class="error-message"></div><br>
+
+        <button type="submit" id="submitButton">送信</button>
+    </form>
+
+    <script>
+        function validateField(inputElement, errorElement, validationFunction) {
+            inputElement.addEventListener("blur", () => {
+                const inputValue = inputElement.value;
+                const errorMessage = validationFunction(inputValue);
+                errorElement.textContent = errorMessage;
+                errorElement.style.display = errorMessage ? "block" : "none";
+                document.getElementById("submitButton").disabled = !!errorMessage;
+            });
+        }
+
+        function validateName(name) {
+            if (!name.trim()) {
+                return '名前を入力してください。';
+            } else if (/[!@#$%^&*(),.?":{}|<>0-9]/.test(name)) {
+                return '名前には記号や数字は含められません。';
+            }
+            return '';
+        }
+
+        function validateAge(age) {
+            if (!age.trim()) {
+                return '年齢を入力してください。';
+            } else if (!/^[0-9]+$/.test(age)) {
+                return '年齢には数字のみを入力してください。';
+            }
+            return '';
+        }
+
+        function validateRating(rating) {
+            if (!rating.trim()) {
+                return '評価を入力してください。';
+            } else if (!/^[0-9]+$/.test(rating)) {
+                return '評価には数字のみを入力してください。';
+            }
+            return '';
+        }
+
+        function validateReason(reason) {
+            if (!reason.trim()) {
+                return '評価内容を入力してください。';
+            }
+            return '';
+        }
+
+        function validateForm(event) {
+            const name = document.getElementById("nameInput").value;
+            const age = document.getElementById("ageInput").value;
+            const rating = document.getElementById("ratingInput").value;
+            const reason = document.getElementById("reasonInput").value;
+
+            const nameErrorMessage = validateName(name);
+            const ageErrorMessage = validateAge(age);
+            const ratingErrorMessage = validateRating(rating);
+            const reasonErrorMessage = validateReason(reason);
+
+            document.getElementById("nameErrorMessage").textContent = nameErrorMessage;
+            document.getElementById("nameErrorMessage").style.display = nameErrorMessage ? "block" : "none";
+            document.getElementById("ageErrorMessage").textContent = ageErrorMessage;
+            document.getElementById("ageErrorMessage").style.display = ageErrorMessage ? "block" : "none";
+            document.getElementById("ratingErrorMessage").textContent = ratingErrorMessage;
+            document.getElementById("ratingErrorMessage").style.display = ratingErrorMessage ? "block" : "none";
+            document.getElementById("reasonErrorMessage").textContent = reasonErrorMessage;
+            document.getElementById("reasonErrorMessage").style.display = reasonErrorMessage ? "block" : "none";
+
+            document.getElementById("submitButton").disabled = !!(nameErrorMessage || ageErrorMessage || ratingErrorMessage || reasonErrorMessage);
+
+            if (nameErrorMessage || ageErrorMessage || ratingErrorMessage || reasonErrorMessage) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        validateField(document.getElementById("nameInput"), document.getElementById("nameErrorMessage"), validateName);
+        validateField(document.getElementById("ageInput"), document.getElementById("ageErrorMessage"), validateAge);
+        validateField(document.getElementById("ratingInput"), document.getElementById("ratingErrorMessage"), validateRating);
+        validateField(document.getElementById("reasonInput"), document.getElementById("reasonErrorMessage"), validateReason);
+    </script>
+</body>
+</html>

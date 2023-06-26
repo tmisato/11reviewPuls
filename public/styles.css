@@ -1,0 +1,188 @@
+@charset "UTF-8";
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    font-size: 12px;
+}
+h1{
+  text-align: center;
+}
+.deta-container{
+  display: flex;
+  justify-content: center;
+}
+
+/* 追加リンクのスタイル */
+#user-table {
+    margin-bottom: 20px;
+    width: 60%;
+    margin: 0 auto;
+}
+
+/* ラベルのスタイル */
+label {
+color: #878787;
+margin-left: 50px;
+}
+
+/* セレクトボックスのスタイル */
+select {
+    padding: 10px;
+}
+
+/* テーブルのスタイル */
+.user-list {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    padding: 30px;
+}
+
+.user-list li {
+    list-style: none;
+}
+span{
+  font-size: 20px;
+}
+.star2{
+  color: #f35c5c;
+  padding: 5px;
+}
+.user-list li:nth-child(2) {
+    font-size: 0.8rem;
+    text-align: right;
+}
+.up-cell {
+  padding-right: 10px;
+}
+
+.up-cell a{
+color: rgb(131, 124, 123);
+padding: 5px;
+border: 1px solid;
+border-radius: 5px;
+list-style: none;
+}
+
+li:last-of-type {
+    border-top: dotted 1px #999;
+    padding: 50px;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    width: 50%;
+    border-radius: 5px;
+    margin: 20px 500px;
+}
+
+.filter-content,
+.sort-content {
+    margin-right: 10px;
+}
+.user-list li:nth-child(1) {
+    width: 10%;
+    padding: 10px;
+    border-radius: 5px;
+}
+.star {
+  color: rgb(232, 232, 34);
+
+}
+
+.gray {
+  color: rgb(219, 209, 209);
+}
+
+/* グラフ */
+.deta-container {
+  margin-left: 20%;
+  width: 30%;}
+
+  .age-chart-container{
+    left: 500px;
+position: relative;
+
+
+}
+
+
+.create {
+  margin-left: 5%;
+}
+
+.create a {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4c8bf5;
+  border-radius: 3px;
+  text-decoration: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.create a:hover {
+  background-color: #3665c8;
+}
+
+
+
+
+
+
+.rating-cell {
+  list-style-type: none;
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: #eaec50;
+}
+
+li.user-info-cell {
+  padding: 10px;
+}
+
+
+.user-info-cell {
+  flex: 1;
+}
+
+.reason-cell {
+  flex: 3;
+  font-size: 1rem;
+}
+
+
+div#age-chart-container {
+  position: relative;
+  width: 100%;
+  margin: 50px 20px 20px 0px;
+}
+
+#age-chart-legend {
+  top: 50px;
+  right: 100px;
+  position: absolute;
+
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+.legend-label {
+  font-size: 12px;
+}

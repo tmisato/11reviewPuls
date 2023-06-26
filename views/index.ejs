@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>User list</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>商品レビュー</h1>
+        <div id="age-chart-container">
+            <canvas id="age-chart"></canvas>
+        </div>
+        <div class="search">
+            <div class="sort-content">
+                <label for="sort">並び替え</label>
+                <select id="sort" name="sort">
+                    <option value="default">標準</option>
+                    <option value="high">評価が高い順</option>
+                    <option value="low">評価が低い順</option>
+                </select>
+            </div>
+            <div class="filter-content">
+                <label for="filter">絞り込み：</label>
+                <select id="filter" name="filter">
+                    <option value="all">すべて</option>
+                    <option value="1">評価1</option>
+                    <option value="2">評価2</option>
+                    <option value="3">評価3</option>
+                    <option value="4">評価4</option>
+                    <option value="5">評価5</option>
+                </select>
+            </div>
+            <div class="create"><a href="/create">レビューを追加</a></div>
+        </div>
+        <table id="user-table">
+            <thead>
+                <tr>
+                    <th>ユーザ名</th>
+                    <th>年齢</th>
+                    <th>評価</th>
+                    <th>理由</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user=> { %> <tr>
+                        <td>
+                            <%= user.username %>
+                        </td>
+                        <td>
+                            <%= user.age %>
+                        </td>
+                        <td>
+                            <div class="rating" data-rating="<%= user.rating %>"></div>
+                        </td>
+                        <td>
+                            <%= user.reason %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const ratings = document.querySelectorAll('.rating');
+
+        ratings.forEach((rating) => {
+            const starsContainer = document.createElement('div');
+            starsContainer.classList.add('stars');
+
+            const ratingValue = parseInt(rating.dataset.rating);
+
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('span');
+                star.classList.add('star');
+
+                if (i <= ratingValue) {
+                    star.textContent = '\u2605'; // Filled star
+                } else {
+                    star.textContent = '\u2606'; // Empty star
+                }
+
+                starsContainer.appendChild(star);
+            }
+
+            rating.appendChild(starsContainer);
+        });
+
+        let ageChartInstance = null;
+
+        function createChart(users) {
+            const ageData = {
+                labels: ['10代', '20代', '30代', '40代', 'その他'],
+                datasets: [
+                    {
+                        label: '年齢',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                        ],
+                    },
+                ],
+            };
+
+            users.forEach((user) => {
+                if (user.age >= 10 && user.age < 20) {
+                    ageData.datasets[0].data[0]++;
+                } else if (user.age >= 20 && user.age < 30) {
+                    ageData.datasets[0].data[1]++;
+                } else if (user.age >= 30 && user.age < 40) {
+                    ageData.datasets[0].data[2]++;
+                } else if (user.age >= 40 && user.age < 50) {
+                    ageData.datasets[0].data[3]++;
+                } else if (user.age ) {
+                    ageData.datasets[0].data[4]++;
+                }
+            });
+
+            if (ageChartInstance) {
+                ageChartInstance.destroy();
+            }
+
+            const ageChart = document.getElementById('age-chart').getContext('2d');
+            ageChartInstance = new Chart(ageChart, {
+                type: 'bar',
+                data: ageData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stepSize: 1,
+                        },
+                    },
+                },
+            });
+        }
+
+        function updateChart() {
+            const sort = document.getElementById('sort').value;
+            const filter = document.getElementById('filter').value;
+
+            fetch(`/users?sort=${sort}&filter=${filter}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    createChart(data);
+
+                    const tbody = document.querySelector('#user-table tbody');
+                    tbody.innerHTML = '';
+
+                    data.forEach((user) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.username}</td>
+                            <td>${user.age}</td>
+                            <td>
+                                <div class="rating" data-rating="${user.rating}"></div>
+                            </td>
+                            <td>${user.reason}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    const ratings = document.querySelectorAll('.rating');
+
+                    ratings.forEach((rating) => {
+                        const starsContainer = document.createElement('div');
+                        starsContainer.classList.add('stars');
+
+                        const ratingValue = parseInt(rating.dataset.rating);
+
+                        for (let i = 1; i <= 5; i++) {
+                            const star = document.createElement('span');
+                            star.classList.add('star');
+
+                            if (i <= ratingValue) {
+                                star.textContent = '\u2605'; // Filled star
+                            } else {
+                                star.textContent = '\u2606'; // Empty star
+                            }
+
+                            starsContainer.appendChild(star);
+                        }
+
+                        rating.appendChild(starsContainer);
+                    });
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateChart();
+        });
+
+        document.getElementById('sort').addEventListener('change', updateChart);
+        document.getElementById('filter').addEventListener('change', updateChart);
+    </script>
+</body>
+</html>
